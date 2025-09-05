@@ -1,29 +1,12 @@
-import type { Actividades } from "../types"
-import { useMemo } from 'react';
 import CalorieDisplay from "./CalorieDisplay";
-
-type CalorietrakerProps = {
-    actividades: Actividades[]
-}
-
-export default function CalorieTracker({ actividades }: CalorietrakerProps) {
+import { useActivity } from '../hooks/useActivity';
 
 
-    // Contadores
+export default function CalorieTracker() {
 
-    const caloriesConsumed = useMemo(() =>
-        actividades.reduce((total, actividad) =>
-            actividad.categorias === 1 ? total + actividad.calorias : total, 0
-        ), [actividades]
-    );
+const {caloriesConsumed,caloriesFire,caloriesTotal} = useActivity()
 
-    const caloriesFire = useMemo(() =>
-        actividades.reduce((total, actividad) =>
-            actividad.categorias === 2 ? total + actividad.calorias : total, 0
-        ), [actividades]
-    );
 
-    const caloriesTotal = useMemo(() => caloriesConsumed - caloriesFire, [actividades])
 
     return (
 

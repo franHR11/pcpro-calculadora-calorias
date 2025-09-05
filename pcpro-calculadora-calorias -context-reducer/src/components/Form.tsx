@@ -1,54 +1,48 @@
 import { useState, useEffect } from "react"
-import { v4 as uuidv4} from 'uuid'
-import type { Dispatch } from "react"
+import { v4 as uuidv4 } from 'uuid'
 import { categorias } from "../data/categorias"
 import type { Actividades } from "../types"
-import type { ActividadActionsType, ActivityState } from "../reducers/activity-reducer"
+import { useActivity } from "../hooks/useActivity"
 
-type FormProps = {
-    dispatch : Dispatch<ActividadActionsType>,
-    state: ActivityState
+const initialState: Actividades = {
+    id: uuidv4(),
+    categorias: 1,
+    name: '',
+    calorias: 0
 }
 
-const initialState : Actividades = {
-    id: uuidv4(),
-        categorias: 1,
-        name: '',
-        calorias: 0
-    }
 
 
-
-export default function Form({dispatch , state} : FormProps) {
-
+export default function Form() {
+    const { state, dispatch } = useActivity()
     const [actividad, setActividad] = useState<Actividades>(initialState)
 
-    useEffect( ()=> {
-if(state.activeId){
-    const selectedActivity = state.actividades.filter( stateActivity => stateActivity.id === state.activeId)[0]
-    setActividad(selectedActivity)
-}
+    useEffect(() => {
+        if (state.activeId) {
+            const selectedActivity = state.actividades.filter(stateActivity => stateActivity.id === state.activeId)[0]
+            setActividad(selectedActivity)
+        }
     }, [state.activeId])
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         const EsUnNumero = ['categorias', 'calorias'].includes(e.target.id)
         setActividad({
             ...actividad,
-           [e.target.id]: EsUnNumero ? +e.target.value : e.target.value
+            [e.target.id]: EsUnNumero ? +e.target.value : e.target.value
         })
     }
 
     const EsValidaActividad = () => {
-        const {name, calorias} = actividad
+        const { name, calorias } = actividad
         return name.trim() !== '' && calorias > 0
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        
+
         if (!EsValidaActividad()) return
 
-        dispatch({type: 'guardar-actividad', payload: {nuevaActividad: actividad} })
+        dispatch({ type: 'guardar-actividad', payload: { nuevaActividad: actividad } })
 
         setActividad({
             ...initialState,
@@ -61,7 +55,7 @@ if(state.activeId){
 
     return (
         <form className=" space-y-5 bg-white shadow p-10 rounded-lg"
-        onSubmit={handleSubmit}>
+            onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-3">
                 <label htmlFor="categorias" className="font-bold">Categoria:</label>
                 <select className="border border-slate-300 p-2 rounder-lg w-full bg-white" id="categorias"

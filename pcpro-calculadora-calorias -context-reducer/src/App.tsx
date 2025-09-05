@@ -1,23 +1,22 @@
-import { useReducer, useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import Form from "./components/Form"
-import { activityReducer, initialState } from "./reducers/activity-reducer"
 import ActvityList from "./components/ActvityList"
 import CalorieTracker from "./components/CalorieTracker"
-
+import { useActivity } from "./hooks/useActivity"
 
 
 function App() {
 
-  const [state , dispatch] = useReducer(activityReducer, initialState)
+  const { state, dispatch } = useActivity()
 
-useEffect(() => {
-if (state?.actividades) {
-  localStorage.setItem('activities', JSON.stringify(state.actividades))
-}
-},[state?.actividades])
+  useEffect(() => {
+    if (state?.actividades) {
+      localStorage.setItem('actividades', JSON.stringify(state.actividades))
+    }
+  }, [state?.actividades])
 
 
-const canRestarApp = useMemo(() => (state?.actividades ?? []).length > 0, [state?.actividades])
+  const canRestarApp = useMemo(() => (state?.actividades ?? []).length > 0, [state?.actividades])
 
   return (
     <>
@@ -26,8 +25,8 @@ const canRestarApp = useMemo(() => (state?.actividades ?? []).length > 0, [state
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <h1 className="text-center text-lg font-bold text-white uppercase">Pcrpo - Contador de Calorias</h1>
           <button className="bg-gray-800 hover:bg-gray-900 p-2 font-bold uppercase text-white cursor-pointer rounded-lg text-sm disabled:opacity-10"
-          disabled={!canRestarApp}
-          onClick={() => dispatch({type: 'restart-app'})}
+            disabled={!canRestarApp}
+            onClick={() => dispatch({ type: 'restart-app' })}
           >
             Reiniciar App
           </button>
@@ -37,31 +36,23 @@ const canRestarApp = useMemo(() => (state?.actividades ?? []).length > 0, [state
 
         <div className="max-w-4xl mx-auto">
 
-          <Form 
-          dispatch ={dispatch}
-          state={state}
-          />
+          <Form />
         </div>
       </section>
 
       <section className="bg-gray-800 py-10">
-<div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto">
 
-  <CalorieTracker
-  actividades={state.actividades}
-  />
+          <CalorieTracker/>
 
-</div>
+        </div>
 
       </section>
 
-<section className="p-10 mx-auto max-w-4xl">
+      <section className="p-10 mx-auto max-w-4xl">
 
-  <ActvityList
-  activities={state?.actividades ?? []}
-  dispatch={dispatch}
-  />
-</section>
+        <ActvityList/>
+      </section>
 
     </>
   )

@@ -13,8 +13,8 @@ export type ActivityState = {
 }
 
 const localStorageActivities = (): Actividades[] => {
-    const activities = localStorage.getItem('activities')
-    return activities ? JSON.parse(activities) : []
+    const actividades = localStorage.getItem('actividades')
+    return actividades ? JSON.parse(actividades) : []
 }
 
 export const initialState: ActivityState = {
@@ -29,18 +29,18 @@ export const activityReducer = (
 
     if (action.type === 'guardar-actividad') {
 
-        let updateActivities: Actividades[] = []
+        let updateActividades: Actividades[] = []
 
         if (state.activeId) {
-            updateActivities = state.actividades.map(Actividades => Actividades.id === state.activeId ? action.payload.nuevaActividad : Actividades)
+            updateActividades = state.actividades.map(Actividades => Actividades.id === state.activeId ? action.payload.nuevaActividad : Actividades)
         } else {
-            updateActivities = [...state.actividades, action.payload.nuevaActividad]
+            updateActividades = [...state.actividades, action.payload.nuevaActividad]
         }
 
 
         return {
             ...state,
-            actividades: updateActivities,
+            actividades: updateActividades,
             activeId: ''
         }
     }
@@ -55,7 +55,7 @@ export const activityReducer = (
     if (action.type === 'delete-activity') {
         return {
             ...state,
-            actividades: state.actividades.filter(activity => activity.id !== action.payload.id)
+            actividades: state.actividades.filter(actividad => actividad.id !== action.payload.id)
         }
     }
 
